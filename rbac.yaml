@@ -1,0 +1,41 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: from-acm-test1
+rules:
+- apiGroups:
+  - ""
+  resources:
+  - configmaps
+  - endpoints
+  - persistentvolumeclaims
+  - persistentvolumeclaims/status
+  - pods
+  - replicationcontrollers
+  - replicationcontrollers/scale
+  - serviceaccounts
+  - services
+  - services/status
+  verbs:
+  - get
+  - list
+  - watch
+---
+kind: ServiceAccount
+apiVersion: v1
+metadata:
+  name: sa-from-acm
+  namespace: default
+---
+kind: ClusterRoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: from-acm-global
+subjects:
+- kind: ServiceAccount
+  name: sa-from-acm
+  namespace: default
+roleRef:
+  kind: ClusterRole
+  name: from-acm-test1
+  apiGroup: rbac.authorization.k8s.io
